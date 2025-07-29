@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <title>Donaciones</title>
+  <title>Donaciones - Apoya nuestra causa</title> 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
@@ -9,18 +9,46 @@
     <div class="card" style="width: 25rem;">
       <div class="card-body">
         <h1 class="card-title text-center mb-4">Apoya nuestra causa</h1>
-        <p class="card-text text-center mb-4 lead">Tu contribución ayuda a continuar con nuestros programas.</p>
-        <form>
+        <p class="card-text text-center mb-4 lead" id="causa-descripcion">Tu contribución ayuda a continuar con nuestros programas.</p> 
+        <form id="donacionForm"> 
           <div class="mb-3">
-            <label for="montoDonacion" class="form-label">Monto a donar:</label>
-            <input type="number" class="form-control" id="montoDonacion" name="monto" placeholder="Ej: 5000" min="0">
+            <label for="montoDonacion" class="form-label visually-hidden">Monto a donar (en tu moneda local):</label> 
+            <input type="number" class="form-control" id="montoDonacion" name="monto" placeholder="Ej: 5000" min="0" step="1" aria-describedby="monto-ayuda" required>
+            <div id="monto-ayuda" class="form-text">Por favor, introduce un valor numérico.</div>
           </div>
-          <button type="submit" class="btn btn-primary w-100">Donar</button>
+          <button type="submit" class="btn btn-primary w-100">Donar ahora</button> 
         </form>
+        <div id="mensajeDonacion" class="alert mt-3 d-none" role="alert"></div>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+    
+    document.getElementById('donacionForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Evita que el formulario se envíe de la forma tradicional
+      
+      const montoInput = document.getElementById('montoDonacion');
+      const mensajeDiv = document.getElementById('mensajeDonacion');
+      const monto = parseFloat(montoInput.value);
+
+      mensajeDiv.classList.remove('d-none', 'alert-success', 'alert-danger');
+      mensajeDiv.textContent = ''; // Limpiar mensajes anteriores
+
+      if (isNaN(monto) || monto <= 0) {
+        mensajeDiv.classList.add('alert-danger');
+        mensajeDiv.textContent = 'Por favor, introduce un monto válido y mayor que cero para tu donación.';
+      } else {
+        mensajeDiv.classList.add('alert-success');
+        mensajeDiv.textContent = `¡Muchas gracias! Tu donación de ${monto.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })} ha sido recibida con éxito.`; // Formato de moneda
+        // Aquí iría la lógica para enviar la donación a un servidor (ej. AJAX)
+        // Por ahora, solo mostramos el mensaje.
+        montoInput.value = ''; // Limpiar el campo después de una donación exitosa
+      }
+      mensajeDiv.classList.remove('d-none');
+    });
+    // AÑADIDO (Líneas 30-49) - Fin del script para funcionalidad
+  </script>
 </body>
 </html>
